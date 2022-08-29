@@ -47,6 +47,7 @@ const UIController = (function () {
     addButton: ".addBtn",
     productName: "#productName",
     productPrice: "#productPrice",
+    productCard: "#productCard",
   };
 
   return {
@@ -77,7 +78,12 @@ const UIController = (function () {
       document.querySelector(Selectors.productName).value = "";
       document.querySelector(Selectors.productPrice).value = "";
     },
+    hideCard: function () {
+      document.querySelector(Selectors.productCard).style.display = "none";
+    },
     addProduct: function (prd) {
+      document.querySelector(Selectors.productCard).style.display = "block";
+
       var item = `
       <tr>
             <td>${prd.id}</td>
@@ -130,7 +136,12 @@ const App = (function (ProductCtrl, UICtrl) {
     init: function () {
       console.log("Starting App");
       const products = ProductCtrl.getProducts();
-      UICtrl.createProductList(products);
+
+      if (products.length == 0) {
+        UICtrl.hideCard();
+      } else {
+        UICtrl.createProductList(products);
+      }
 
       loadEventListeners();
     },
