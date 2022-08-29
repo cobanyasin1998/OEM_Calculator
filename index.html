@@ -38,7 +38,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  id="name"
+                  id="productName"
                   placeholder="Name"
                 />
               </div>
@@ -46,43 +46,32 @@
                 <input
                   type="text"
                   class="form-control"
-                  id="price"
+                  id="productPrice"
                   placeholder="Price"
                 />
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-sm">
-              <i class="fas fa-plus"></i>Add
+            <button type="submit" class="btn btn-primary btn-sm addBtn">
+              <i class="fas fa-plus"></i>&nbsp;Add
             </button>
 
             <button type="submit" class="btn btn-warning btn-sm">
-                <i class="fa fa-edit"></i>Save Changes
-              </button>
+              <i class="fa fa-edit"></i>&nbsp;Save Changes
+            </button>
 
-              <button type="submit" class="btn btn-danger btn-sm">
-                <i class="fas fa-times"></i>Delete
-              </button>
+            <button type="submit" class="btn btn-danger btn-sm">
+              <i class="fas fa-times"></i>&nbsp;Delete
+            </button>
 
-              <button type="submit" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-circle-left"></i>Cancel
-              </button>
+            <button type="submit" class="btn btn-secondary btn-sm">
+              <i class="fas fa-arrow-circle-left"></i>&nbsp;Cancel
+            </button>
           </form>
         </div>
         <div class="card mt-3">
           <table class="table">
-            <tbody id="item-list">
-                <tr>
-                    <td>1</td>
-                    <td>Monitor</td>
-                    <td>100 $</td>
-                    <td class="text-right">
-                        <button type="submit" class="btn btn-warning btn-sm">
-                            <i class="fa fa-edit"></i>
-                          </button>
-                    </td>
-                </tr>
-            </tbody>
+            <tbody id="item-list"></tbody>
           </table>
         </div>
 
