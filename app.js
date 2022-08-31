@@ -33,9 +33,19 @@ const ProductController = (function () {
         id = 0;
       }
 
-      const newProduct = new Product(id, name, price);
+      const newProduct = new Product(id, name, parseFloat(price));
       data.products.push(newProduct);
       return newProduct;
+    },
+    GetTotal: function () {
+      let total = 0;
+      data.products.forEach(function (item) {
+
+        total += item.price;
+      });
+
+      data.totalPrice = total;
+      return data.totalPrice;
     },
   };
 })();
@@ -48,6 +58,8 @@ const UIController = (function () {
     productName: "#productName",
     productPrice: "#productPrice",
     productCard: "#productCard",
+    totalTl: "#total-tl",
+    totalDollar: "#total-dollar",
   };
 
   return {
@@ -80,6 +92,10 @@ const UIController = (function () {
     },
     hideCard: function () {
       document.querySelector(Selectors.productCard).style.display = "none";
+    },
+    showTotal: function (total) {
+      document.querySelector(Selectors.totalDollar).textContent = parseInt(total /18);
+      document.querySelector(Selectors.totalTl).textContent = total;
     },
     addProduct: function (prd) {
       document.querySelector(Selectors.productCard).style.display = "block";
@@ -126,6 +142,13 @@ const App = (function (ProductCtrl, UICtrl) {
       //Add item to list
       UIController.addProduct(newProduct);
 
+      //get Total
+      const total = ProductCtrl.GetTotal();
+
+      //show total
+      UICtrl.showTotal(total);
+
+      //clear Inputs
       UIController.clearInputs();
     }
 
