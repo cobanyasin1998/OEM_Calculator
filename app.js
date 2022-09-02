@@ -24,6 +24,23 @@ const ProductController = (function () {
     getData: function () {
       return data;
     },
+    getProductById: function (id) {
+      let product = null;
+
+      data.products.forEach(function (prd) {
+        if (prd.id == id) {
+          product = prd;
+        }
+      });
+
+      return product;
+    },
+    setCurrentProduct: function (product) {
+      data.selectedProduct = product;
+    },
+    getCurrentProduct: function () {
+      return data.selectedProduct;
+    },
     addProduct: function (name, price) {
       let id;
 
@@ -40,7 +57,6 @@ const ProductController = (function () {
     GetTotal: function () {
       let total = 0;
       data.products.forEach(function (item) {
-
         total += item.price;
       });
 
@@ -73,9 +89,7 @@ const UIController = (function () {
             <td>${prd.name}</td>
             <td>${prd.price}$</td>
             <td class="text-right">
-            <button type="submit" class="btn btn-warning btn-sm">
-              <i class="fa fa-edit"></i>
-            </button>
+            <i class="fa fa-edit edit-product"></i>
           </td>
         </tr>
       `;
@@ -94,9 +108,19 @@ const UIController = (function () {
       document.querySelector(Selectors.productCard).style.display = "none";
     },
     showTotal: function (total) {
-      document.querySelector(Selectors.totalDollar).textContent = parseInt(total /18);
+      document.querySelector(Selectors.totalDollar).textContent = parseInt(
+        total / 18
+      );
       document.querySelector(Selectors.totalTl).textContent = total;
     },
+    addProductToForm:function(){
+
+      const selectedProduct =ProductController.getCurrentProduct();
+
+      document.querySelector(Selectors.productName).textContent = selectedProduct.name;
+      document.querySelector(Selectors.productPrice).textContent = selectedProduct.price;
+    },
+
     addProduct: function (prd) {
       document.querySelector(Selectors.productCard).style.display = "block";
 
@@ -106,9 +130,9 @@ const UIController = (function () {
             <td>${prd.name}</td>
             <td>${prd.price}$</td>
             <td class="text-right">
-            <button type="submit" class="btn btn-warning btn-sm">
-              <i class="fa fa-edit"></i>
-            </button>
+          
+              <i class="fa fa-edit edit-product"></i>
+         
           </td>
         </tr>
       
@@ -130,6 +154,12 @@ const App = (function (ProductCtrl, UICtrl) {
     document
       .querySelector(UISelectors.addButton)
       .addEventListener("click", productAddSubmit);
+
+    //Edit Product Event
+
+    document
+      .querySelector(UISelectors.productList)
+      .addEventListener("click", productEditSubmit);
   };
 
   const productAddSubmit = function (e) {
@@ -150,6 +180,25 @@ const App = (function (ProductCtrl, UICtrl) {
 
       //clear Inputs
       UIController.clearInputs();
+    }
+
+    e.preventDefault();
+  };
+
+  const productEditSubmit = function (e) {
+    if (e.target.classList.contains("edit-product")) {
+      const id =
+        e.target.parentNode.previousElementSibling.previousElementSibling
+          .previousElementSibling.textContent;
+
+      //get SelectedProduct
+
+      const product = ProductController.getProductById(id);
+      //set current product
+      ProductCtrl.setCurrentProduct(product);
+
+      //add product to UI
+      UICtrl.addProductToForm();
     }
 
     e.preventDefault();
