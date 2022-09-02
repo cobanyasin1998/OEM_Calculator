@@ -41,6 +41,18 @@ const ProductController = (function () {
     getCurrentProduct: function () {
       return data.selectedProduct;
     },
+    updateProduct: function (name, price) {
+      let product = null;
+
+      data.products.forEach(function (prd) {
+        if (prd.id == data.selectedProduct.id) {
+          prd.name = name;
+          prd.price = price;
+          product = prd;
+        }
+      });
+      return product;
+    },
     addProduct: function (name, price) {
       let id;
 
@@ -71,6 +83,9 @@ const UIController = (function () {
   const Selectors = {
     productList: "#item-list",
     addButton: ".addBtn",
+    updateBtn: ".updateBtn",
+    deleteBtn: ".deleteBtn",
+    cancelBtn: ".cancelBtn",
     productName: "#productName",
     productPrice: "#productPrice",
     productCard: "#productCard",
@@ -113,12 +128,36 @@ const UIController = (function () {
       );
       document.querySelector(Selectors.totalTl).textContent = total;
     },
-    addProductToForm:function(){
+    addProductToForm: function () {
+      const selectedProduct = ProductController.getCurrentProduct();
 
-      const selectedProduct =ProductController.getCurrentProduct();
+      document.querySelector(Selectors.productName).textContent =
+        selectedProduct.name;
+      document.querySelector(Selectors.productPrice).textContent =
+        selectedProduct.price;
+    },
 
-      document.querySelector(Selectors.productName).textContent = selectedProduct.name;
-      document.querySelector(Selectors.productPrice).textContent = selectedProduct.price;
+    addingState: function () {
+      UIController.clearInputs();
+
+      document.querySelector(Selectors.addButton).style.display = "inline";
+      document.querySelector(Selectors.updateBtn).style.display = "none";
+      document.querySelector(Selectors.deleteBtn).style.display = "none";
+      document.querySelector(Selectors.cancelBtn).style.display = "none";
+    },
+    editState: function (tr) {
+      const parent = tr.parentNode;
+
+      for (let i = 0; i < parent.children.length; i++) {
+        parent.children[i].classList.remove("bg-warning");
+      }
+
+      tr.classList.add("bg-warning");
+
+      document.querySelector(Selectors.addButton).style.display = "none";
+      document.querySelector(Selectors.updateBtn).style.display = "inline";
+      document.querySelector(Selectors.deleteBtn).style.display = "inline";
+      document.querySelector(Selectors.cancelBtn).style.display = "inline";
     },
 
     addProduct: function (prd) {
@@ -159,7 +198,28 @@ const App = (function (ProductCtrl, UICtrl) {
 
     document
       .querySelector(UISelectors.productList)
+      .addEventListener("click", productEditClick);
+
+    //edit product submit
+
+    document
+      .querySelector(UISelectors.updateBtn)
       .addEventListener("click", productEditSubmit);
+  };
+
+  const productEditSubmit = function (e) {
+    const productName = document.querySelector(UISelectors.productName).value;
+    const productPrice = document.querySelector(UISelectors.productPrice).value;
+
+    if (productName !== "" && productPrice !== "") {
+      //update product
+      const updatedProduct = ProductCtrl.updateProduct(
+        productName,
+        productPrice
+      );
+    }
+
+    e.preventDefault();
   };
 
   const productAddSubmit = function (e) {
@@ -185,7 +245,7 @@ const App = (function (ProductCtrl, UICtrl) {
     e.preventDefault();
   };
 
-  const productEditSubmit = function (e) {
+  const productEditClick = function (e) {
     if (e.target.classList.contains("edit-product")) {
       const id =
         e.target.parentNode.previousElementSibling.previousElementSibling
@@ -199,6 +259,8 @@ const App = (function (ProductCtrl, UICtrl) {
 
       //add product to UI
       UICtrl.addProductToForm();
+
+      UICtrl.editState(e.target.parentNode.parentNode);
     }
 
     e.preventDefault();
@@ -207,6 +269,9 @@ const App = (function (ProductCtrl, UICtrl) {
   return {
     init: function () {
       console.log("Starting App");
+
+      UIController.addingState();
+
       const products = ProductCtrl.getProducts();
 
       if (products.length == 0) {
